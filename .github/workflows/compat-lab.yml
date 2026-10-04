@@ -1,0 +1,152 @@
+name: Compatibility lab
+
+# Every night, the latest released Parallex against the current versions of
+# popular apps: each installed fresh, made into an instance the way New
+# Instance makes one by default (a copy with its own Library, keychain,
+# Guard and recorder, or for browsers a wrapper with a profile folder of its
+# own, and then a copy too), opened, and checked for running, crashing and
+# reaching the original's data. Results in the run's summary, as the
+# compat-lab artifact, and on the lab-results branch, which
+# parallex.mandip.dev/compatibility reads.
+on:
+  schedule:
+    - cron: "37 7 * * *"
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "Just these apps (names, comma-separated); results aren't published unless asked below"
+        required: false
+        default: ""
+      publish:
+        description: "Publish the results of a run of just some apps too (a full run always publishes)"
+        type: boolean
+        required: false
+        default: false
+
+concurrency:
+  group: compat-lab
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # Runs other people's apps, so it gets nothing it could push with: a
+  # read-only token, not kept in the checkout.
+  lab:
+    runs-on: macos-26
+    timeout-minutes: 150
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Parallex
+        # The latest release, checked against its published checksum.
+        run: ./fetch-parallex.sh "$RUNNER_TEMP/parallex"
+      - name: Lab
+        env:
+          ONLY: ${{ inputs.only }}
+          PARALLEX_CLI: ${{ runner.temp }}/parallex/Parallex.app/Contents/Resources/parallex
+          # Optional: a key for Parallex builds whose command asks for one
+          # (passed to it as PARALLEX_LICENCE). Empty when the secret isn't set.
+          PARALLEX_LAB_LICENCE: ${{ secrets.PARALLEX_LAB_LICENCE }}
+        run: |
+          apps=("Obsidian=obsidian" "Visual Studio Code=visual-studio-code" "Zed=zed" "IINA=iina"
+            "VLC=vlc" "Discord=discord" "Slack=slack" "Spotify=spotify"
+            "Claude=claude" "ChatGPT=chatgpt" "Cursor=cursor" "Notion=notion" "Telegram=telegram"
+            "Signal=signal" "Figma=figma" "WhatsApp=whatsapp" "Postman=postman" "Linear=linear-linear"
+            "Google Chrome=google-chrome" "Firefox=firefox" "Brave Browser=brave-browser" "Microsoft Edge=microsoft-edge"
+            "Arc=arc" "Vivaldi=vivaldi" "zoom.us=zoom" "Microsoft Teams=microsoft-teams" "Element=element"
+            "Mattermost=mattermost" "Warp=warp" "Ghostty=ghostty" "GitHub Desktop=github" "Insomnia=insomnia"
+            "Notion Calendar=notion-calendar" "Miro=miro" "Thunderbird=thunderbird")
+          if [ -n "$ONLY" ]; then
+            chosen=()
+            for spec in "${apps[@]}"; do
+              case ",$ONLY," in *",${spec%%=*},"*) chosen+=("$spec") ;; esac
+            done
+            apps=("${chosen[@]}")
+          fi
+          ./compat-lab.sh --parallex "$PARALLEX_CLI" --install --wait 30 --out compat-lab.json --diagnose diagnostics "${apps[@]}"
+          sw_vers -productVersion > macos.txt
+          cp "$RUNNER_TEMP/parallex/parallex-version.txt" parallex.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: compat-lab
+          path: |
+            compat-lab.json
+            macos.txt
+            parallex.txt
+            diagnostics/
+
+  # Publishes the latest results, alone on the lab-results branch, where the
+  # site's compatibility page reads them. Runs nothing but Python and git.
+  publish:
+    needs: lab
+    if: github.ref == 'refs/heads/main' && (inputs.only == '' || inputs.publish)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: compat-lab
+          path: results
+      - name: Check
+        run: |
+          python3 - <<'PY'
+          import datetime, json, re
+          allowed = {"ran", "quit", "crashed", "leaked", "not installed", "not copied", "not checked"}
+          apps = []
+          for line in open("results/compat-lab.json"):
+              if not line.strip():
+                  continue
+              entry = json.loads(line)
+              if not isinstance(entry.get("app"), str) or len(entry["app"]) > 80 or entry.get("result") not in allowed:
+                  raise SystemExit(f"unexpected entry: {entry!r}")
+              if not isinstance(entry.get("version", ""), str) or len(entry.get("version", "")) > 40:
+                  raise SystemExit(f"unexpected version: {entry!r}")
+              if entry.get("mode", "copy") not in ("copy", "wrapper"):
+                  raise SystemExit(f"unexpected mode: {entry!r}")
+              own = entry.get("ownIdentity")
+              if own is not None and (not isinstance(own, dict) or own.get("result") not in allowed):
+                  raise SystemExit(f"unexpected ownIdentity: {entry!r}")
+              for counts in (entry, own or {}):
+                  for key in ("processes", "leaks", "blocked", "crashes"):
+                      if key in counts and (type(counts[key]) is not int or not 0 <= counts[key] < 10000):
+                          raise SystemExit(f"unexpected {key}: {entry!r}")
+              # The default instance's result, as a copy or a wrapper; for
+              # a wrapper, an own-identity copy's too.
+              app = {k: entry[k] for k in ("app", "version", "mode", "result", "processes", "leaks", "blocked", "crashes") if k in entry}
+              if own is not None:
+                  app["ownIdentity"] = {k: own[k] for k in ("result", "processes", "leaks", "blocked", "crashes") if k in own}
+              apps.append(app)
+          # A night where nothing could be tried (an outage) isn't a result.
+          if not any(a["result"] in ("ran", "quit", "crashed", "leaked") for a in apps):
+              raise SystemExit("nothing was tried; not publishing")
+          macos = open("results/macos.txt").read().strip()
+          parallex = open("results/parallex.txt").read().strip()
+          if not re.fullmatch(r"[0-9.]{1,20}", macos) or not re.fullmatch(r"[0-9]+(\.[0-9]+){1,4}", parallex):
+              raise SystemExit("unexpected run details")
+          # "parallex" is the release the lab ran.
+          run = {"date": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                 "macos": macos, "parallex": parallex, "apps": apps}
+          json.dump(run, open("compat-lab.json", "w"), indent=2)
+          PY
+      - uses: actions/checkout@v4
+        with:
+          path: publish
+      - name: Publish
+        working-directory: publish
+        run: |
+          git checkout -q --orphan lab-results
+          git rm -rq --cached .
+          find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp ../compat-lab.json .
+          git add compat-lab.json
+          git -c user.name="Compatibility lab" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -q -m "Compatibility lab, $(date -u +%Y-%m-%d)"
+          git push -f -q origin lab-results
