@@ -52,10 +52,10 @@ done
 
 parallex=${parallex:A}
 [[ -x $parallex ]] || { echo "no parallex command at $parallex: run ./fetch-parallex.sh first, or pass --parallex PATH" >&2; exit 2 }
-# A key for Parallex builds whose command asks for one, from the
-# PARALLEX_LAB_LICENCE secret in CI; the command reads PARALLEX_LICENCE.
-# Releases that don't ask ignore it.
-[[ -n ${PARALLEX_LAB_LICENCE:-} ]] && export PARALLEX_LICENCE=$PARALLEX_LAB_LICENCE
+# A license key for when the free trial can't be had (see "A license" below),
+# from the PARALLEX_LAB_LICENCE secret in CI. Kept out of the environment the
+# apps run in.
+lab_key=${PARALLEX_LAB_LICENCE:-}
 unset PARALLEX_LAB_LICENCE
 lsregister=/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
 
@@ -191,6 +191,33 @@ cleanup() {
   rm -rf "${lab:?}"
 }
 trap cleanup EXIT INT TERM
+
+# A license. From Parallex 2, making instances needs a license or the free
+# trial; looking, opening and removing don't. Each night's runner is a fresh
+# Mac, so the lab starts that Mac's 14-day trial (asking again on a Mac that
+# has one gets the same trial back). Only if no trial can be had (this Mac's
+# has ended, or this network has started its day's trials) is the key in
+# PARALLEX_LAB_LICENCE used, if there is one. Releases before 2 have no
+# `license commands`, and need nothing.
+licence_state() {
+  "$parallex" license status --json 2>/dev/null | python3 -c 'import json, sys; print(json.load(sys.stdin).get("state", ""))' 2>/dev/null
+}
+if "$parallex" license commands 2>/dev/null | grep -q $'^create\tlicensed'; then
+  state=$(licence_state)
+  if [[ $state != trial && $state != licensed ]]; then
+    "$parallex" license trial || echo "The free trial didn't start." >&2
+    state=$(licence_state)
+  fi
+  if [[ $state != trial && $state != licensed && -n $lab_key ]]; then
+    "$parallex" license activate "$lab_key" || echo "The lab's license key didn't activate." >&2
+    state=$(licence_state)
+  fi
+  if [[ $state != trial && $state != licensed ]]; then
+    echo "Parallex has no license or trial on this Mac (${state:-unknown}), so it can't make instances; stopping." >&2
+    exit 1
+  fi
+fi
+unset lab_key
 
 # One JSON object per app, written by Python so any name or version is
 # quoted right: emit key=value ... (numbers for processes, leaks, …), with

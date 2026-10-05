@@ -49,8 +49,9 @@ jobs:
         env:
           ONLY: ${{ inputs.only }}
           PARALLEX_CLI: ${{ runner.temp }}/parallex/Parallex.app/Contents/Resources/parallex
-          # Optional: a key for Parallex builds whose command asks for one
-          # (passed to it as PARALLEX_LICENCE). Empty when the secret isn't set.
+          # From Parallex 2 the lab starts each runner's free trial; this
+          # optional key is used only when no trial can be had. Empty when
+          # the secret isn't set.
           PARALLEX_LAB_LICENCE: ${{ secrets.PARALLEX_LAB_LICENCE }}
         run: |
           apps=("Obsidian=obsidian" "Visual Studio Code=visual-studio-code" "Zed=zed" "IINA=iina"

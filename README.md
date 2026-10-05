@@ -37,7 +37,10 @@ On a Mac you don't mind opening apps on:
 ./compat-lab.sh --wait 30 --diagnose diagnostics "Visual Studio Code" Slack
 ```
 
-Each app is looked up by its name in `/Applications`. With `--install`, an
+From Parallex 2, making instances needs a license or the free trial, so the
+lab starts this Mac's 14-day trial first (in its own Parallex library; a Mac
+whose trial has ended needs a key, in `PARALLEX_LAB_LICENCE`). Each app is
+looked up by its name in `/Applications`. With `--install`, an
 `App=cask` argument installs the cask first, as CI does. Results go to
 `compat-lab.json`, one line per app, and a table to the terminal.
 
