@@ -1,0 +1,388 @@
+{
+  "date": "2026-10-10T14:45:58Z",
+  "macos": "26.6.2",
+  "parallex": "3.5.0",
+  "apps": [
+    {
+      "app": "Obsidian",
+      "version": "1.14.4",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 4,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Visual Studio Code",
+      "version": "1.141.0",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 8,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Zed",
+      "version": "1.23.2",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 2,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "IINA",
+      "version": "1.5.0",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 1,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "VLC",
+      "version": "3.0.24",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 1,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Discord",
+      "version": "0.0.415",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 7,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Slack",
+      "version": "4.52.178",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 5,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Spotify",
+      "version": "1.3.4.258",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 7,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Claude",
+      "version": "2.31226.1",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 8,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "ChatGPT",
+      "version": "26.1007.21159",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 16,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Cursor",
+      "version": "3.24.12",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 11,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Notion",
+      "version": "7.37.1",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 7,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Telegram",
+      "version": "13.0",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 1,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Signal",
+      "version": "8.30.0",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 4,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Figma",
+      "version": "126.9.13",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 8,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "WhatsApp",
+      "version": "26.40.20",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 1,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Postman",
+      "version": "12.31.7",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 5,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Linear",
+      "version": "1.32.4",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 4,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Google Chrome",
+      "version": "152.0.7977.83",
+      "mode": "wrapper",
+      "result": "ran",
+      "processes": 6,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0,
+      "ownIdentity": {
+        "result": "ran",
+        "processes": 7,
+        "leaks": 0,
+        "blocked": 0,
+        "crashes": 0
+      }
+    },
+    {
+      "app": "Firefox",
+      "version": "155.0.1",
+      "mode": "wrapper",
+      "result": "ran",
+      "processes": 10,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0,
+      "ownIdentity": {
+        "result": "ran",
+        "processes": 11,
+        "leaks": 0,
+        "blocked": 0,
+        "crashes": 0
+      }
+    },
+    {
+      "app": "Brave Browser",
+      "version": "155.1.97.56",
+      "mode": "wrapper",
+      "result": "ran",
+      "processes": 6,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0,
+      "ownIdentity": {
+        "result": "ran",
+        "processes": 7,
+        "leaks": 0,
+        "blocked": 0,
+        "crashes": 0
+      }
+    },
+    {
+      "app": "Microsoft Edge",
+      "version": "152.0.4191.66",
+      "mode": "wrapper",
+      "result": "ran",
+      "processes": 6,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0,
+      "ownIdentity": {
+        "result": "ran",
+        "processes": 7,
+        "leaks": 0,
+        "blocked": 0,
+        "crashes": 0
+      }
+    },
+    {
+      "app": "Arc",
+      "version": "1.168.0",
+      "result": "not copied"
+    },
+    {
+      "app": "Vivaldi",
+      "version": "8.2.4133.84",
+      "mode": "wrapper",
+      "result": "ran",
+      "processes": 6,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0,
+      "ownIdentity": {
+        "result": "ran",
+        "processes": 7,
+        "leaks": 0,
+        "blocked": 0,
+        "crashes": 0
+      }
+    },
+    {
+      "app": "zoom.us",
+      "version": "7.2.2 (88465)",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 2,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Microsoft Teams",
+      "version": "26261.303.5165.1465",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 9,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Element",
+      "version": "1.12.30",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 4,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Mattermost",
+      "version": "6.3.0",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 11,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Warp",
+      "result": "not installed"
+    },
+    {
+      "app": "Ghostty",
+      "version": "1.3.1",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 1,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "GitHub Desktop",
+      "version": "3.6.7",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 4,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Insomnia",
+      "version": "13.3.1",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 6,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Notion Calendar",
+      "version": "1.139.0",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 4,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Miro",
+      "version": "0.11.168",
+      "mode": "copy",
+      "result": "ran",
+      "processes": 4,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0
+    },
+    {
+      "app": "Thunderbird",
+      "version": "157.0.1",
+      "mode": "wrapper",
+      "result": "ran",
+      "processes": 4,
+      "leaks": 0,
+      "blocked": 0,
+      "crashes": 0,
+      "ownIdentity": {
+        "result": "ran",
+        "processes": 5,
+        "leaks": 0,
+        "blocked": 0,
+        "crashes": 0
+      }
+    }
+  ]
+}
